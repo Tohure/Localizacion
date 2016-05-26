@@ -6,7 +6,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -17,9 +16,9 @@ public class MainActivity extends Activity implements LocationListener {
     private static final long DISTANCIA_MIN = 5; // 5 metros
     private static final String[] A = {"n/d", "preciso", "impreciso"};
     private static final String[] P = {"n/d", "bajo", "medio", "alto"};
-    private static final String[] E = {"fuera de servicio",
-            "temporalmente no disponible ", "disponible"};
+    private static final String[] E = {"fuera de servicio","temporalmente no disponible ", "disponible"};
     private LocationManager manejador;
+    private Criteria criterio;
     private String proveedor;
     private TextView salida;
 
@@ -32,7 +31,7 @@ public class MainActivity extends Activity implements LocationListener {
         log("Proveedores de localización: \n ");
         muestraProveedores();
 
-        Criteria criterio = new Criteria();
+        criterio = new Criteria();
         criterio.setCostAllowed(false);
         criterio.setAltitudeRequired(false);
         criterio.setAccuracy(Criteria.ACCURACY_FINE);
@@ -58,6 +57,7 @@ public class MainActivity extends Activity implements LocationListener {
     public void onLocationChanged(Location location) {
         log("Nueva localización: ");
         muestraLocaliz(location);
+        proveedor = manejador.getBestProvider(criterio, true);
     }
 
     public void onProviderDisabled(String proveedor) {
@@ -88,6 +88,7 @@ public class MainActivity extends Activity implements LocationListener {
     private void muestraProveedores() {
         log("Proveedores de localización: \n ");
         List<String> proveedores = manejador.getAllProviders();
+        log("Cantidad de provedores: "+proveedores.size()+" \n");
         for (String proveedor : proveedores) {
             muestraProveedor(proveedor);
         }
